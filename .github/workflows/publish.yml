@@ -1,0 +1,38 @@
+# trigger action on main branch
+name: Swift
+
+on:
+  push:
+    branches:
+        - main
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "deploy"
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: macos-latest
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+        
+      - name: Install and Build Swift 🔧
+        run: swift run
+        
+      - name: Set Public Folder
+        run: |
+            mkdir .public
+            cp -r Output/* .public
+            mv .public public
+            ls public
+        
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: public
+          
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
